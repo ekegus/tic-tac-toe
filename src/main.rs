@@ -61,18 +61,54 @@ impl Board {
         self.grid[row_position][column_position] = mark;
         Ok(())
     }
+
+    fn win_row(&self, mark: char) -> bool {
+        let mut has_won = false;
+
+        self.grid.iter().for_each(|row| {
+            if row.iter().all(|m| m == &mark) {
+                has_won = true
+            }
+        });
+
+        has_won
+    }
+
+    fn win_col(&self, mark: char) -> bool {
+        let mut has_won = false;
+
+        for i in 0..=2 {
+            let c1 = self.grid[0][i];
+            let c2 = self.grid[1][i];
+            let c3 = self.grid[2][i];
+            if c1 == mark && c2 == mark && c3 == mark {
+                has_won = true;
+            }
+        }
+
+        has_won
+    }
 }
 
 fn main() {
     let mut board = Board::new();
     board.print_board();
 
-    match board.place_mark('0', [0, 6]) {
+    match board.place_mark('0', [0, 0]) {
+        Ok(value) => println!("Result: {:?}", value),
+        Err(error) => eprintln!("Error: {:?}", error),
+    }
+    match board.place_mark('0', [1, 0]) {
+        Ok(value) => println!("Result: {:?}", value),
+        Err(error) => eprintln!("Error: {:?}", error),
+    }
+    match board.place_mark('0', [2, 0]) {
         Ok(value) => println!("Result: {:?}", value),
         Err(error) => eprintln!("Error: {:?}", error),
     }
 
     board.print_board();
+    println!("{:?}", board.win_col('0'));
 
     // let mark = board.get_mark([0, 1]);
     // let is_empty = board.is_position_empty([0, 1]);
