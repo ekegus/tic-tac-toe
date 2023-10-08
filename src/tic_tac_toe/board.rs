@@ -19,15 +19,15 @@ impl Board {
         self.grid.iter().for_each(|row| println!("{:?}", row));
     }
 
-    pub fn is_position_empty(&self, position: [usize; 2]) -> bool {
+    pub fn is_position_empty(&self, position: (usize, usize)) -> bool {
         match self.get_mark(position) {
             Ok('_') => true,
             _ => false,
         }
     }
 
-    pub fn get_mark(&self, position: [usize; 2]) -> anyhow::Result<char> {
-        let [row_position, column_position] = position;
+    pub fn get_mark(&self, position: (usize, usize)) -> anyhow::Result<char> {
+        let (row_position, column_position) = position;
 
         let row = self
             .grid
@@ -40,15 +40,15 @@ impl Board {
         Ok(*mark)
     }
 
-    pub fn is_position_valid(&self, position: [usize; 2]) -> bool {
+    pub fn is_position_valid(&self, position: (usize, usize)) -> bool {
         match self.get_mark(position) {
             Ok(_) => true,
             _ => false,
         }
     }
 
-    pub fn place_mark(&mut self, mark: char, position: [usize; 2]) -> anyhow::Result<()> {
-        let [row_position, column_position] = position;
+    pub fn place_mark(&mut self, mark: char, position: (usize, usize)) -> anyhow::Result<()> {
+        let (row_position, column_position) = position;
 
         if self.is_position_valid(position) == false {
             return Err(anyhow!("The position is outside the board"));
@@ -110,7 +110,7 @@ impl Board {
         first_diagonal == true || second_diagonal == true
     }
 
-    pub fn win(&self, mark: char) -> bool {
+    pub fn has_won(&self, mark: char) -> bool {
         match (
             self.win_row(mark),
             self.win_col(mark),
@@ -121,8 +121,7 @@ impl Board {
         }
     }
 
-    pub fn empty_positions(&self) -> bool {
-        println!("{:?}", self.grid.concat());
+    pub fn get_has_empty_positions(&self) -> bool {
         self.grid.concat().iter().any(|position| position == &'_')
     }
 }

@@ -18,7 +18,7 @@ impl HumanPlayer {
 
     pub fn get_position(&self) -> anyhow::Result<(usize, usize)> {
         println!(
-            "Make you next {} on the board. The format should be 'row col'.",
+            "Player {}, enter two numbers representing a position in the format 'row col'",
             self.mark
         );
 
@@ -35,15 +35,15 @@ impl HumanPlayer {
         let re = Regex::new(valid_pattern)?;
 
         if re.is_match(position) {
-            println!("Position is: '{}'", position);
-
             let position = self
                 .parse_position(position)
                 .ok_or(anyhow!("Failed to parse position"));
 
             return position;
         } else {
-            Err(anyhow!("Invalid position. Please provide a position in the pattern 'row col'. Both must be numbers."))
+            Err(anyhow!(
+                "Invalid position. The position must be in the format 'row col'."
+            ))
         }
     }
 
