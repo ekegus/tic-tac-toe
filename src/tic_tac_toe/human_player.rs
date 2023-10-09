@@ -16,7 +16,7 @@ impl HumanPlayer {
         self.mark
     }
 
-    pub fn get_position(&self) -> anyhow::Result<(usize, usize)> {
+    pub fn get_position(&self) -> anyhow::Result<[usize; 2]> {
         println!(
             "Player {}, enter two numbers representing a position in the format 'row col'",
             self.mark
@@ -47,12 +47,12 @@ impl HumanPlayer {
         }
     }
 
-    fn parse_position(&self, position: &str) -> Option<(usize, usize)> {
+    fn parse_position(&self, position: &str) -> Option<[usize; 2]> {
         let parts: Vec<_> = position.trim().split(" ").collect();
 
         if parts.len() == 2 {
             if let (Ok(num1), Ok(num2)) = (parts[0].parse::<usize>(), parts[1].parse::<usize>()) {
-                return Some((num1, num2));
+                return Some([num1, num2]);
             }
         }
 
