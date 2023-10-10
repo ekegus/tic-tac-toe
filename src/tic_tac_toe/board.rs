@@ -48,11 +48,11 @@ impl Board {
     pub fn place_mark(&mut self, mark: char, position: [usize; 2]) -> anyhow::Result<()> {
         let [row_position, column_position] = position;
 
-        if self.is_position_valid(position) == false {
+        if !self.is_position_valid(position) {
             return Err(anyhow!("The position is outside the board"));
         }
 
-        if self.is_position_empty(position) == false {
+        if !self.is_position_empty(position) {
             return Err(anyhow!("Position is already taken."));
         }
 
@@ -66,7 +66,7 @@ impl Board {
 
     pub fn win_col(&self, mark: char) -> bool {
         for i in 0..self.grid.len() {
-            if self.grid.iter().all(|row| row[i] == mark) == true {
+            if self.grid.iter().all(|row| row[i] == mark) {
                 return true;
             }
         }
