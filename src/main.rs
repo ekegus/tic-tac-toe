@@ -4,20 +4,11 @@ use crate::tic_tac_toe::game::Game;
 use crate::tic_tac_toe::human_player::HumanPlayer;
 
 fn main() {
-    let mut board = Board::new(3);
+    let board = Board::new(10);
     let player_1 = HumanPlayer::new('X');
     let player_2 = HumanPlayer::new('O');
 
-    board.place_mark('X', [0, 2]).unwrap();
-    board.place_mark('X', [1, 1]).unwrap();
-    board.place_mark('X', [2, 0]).unwrap();
+    let mut game = Game::new();
 
-    board.print_board();
-
-    // println!("{:?}", board.win_row('X'));
-    println!("{:?}", board.win_diagonal('X'));
-
-    // let mut game = Game::new();
-
-    // game.play(board, player_1, player_2);
+    game.play(board, player_1, player_2);
 }
