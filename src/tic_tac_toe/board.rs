@@ -74,23 +74,11 @@ impl Board {
     }
 
     pub fn win_diagonal(&self, mark: char) -> bool {
-        // TODO: Remove these variables...
-        let mut first_diagonal = true;
-        let mut second_diagonal = true;
+        let first_diagonal = (0..self.grid.len()).all(|i| self.grid[i][i] == mark);
+        let second_diagonal =
+            (0..self.grid.len()).all(|i| self.grid[i][self.grid.len() - 1 - i] == mark);
 
-        for i in 0..self.grid.len() {
-            if self.grid[i][i] != mark {
-                first_diagonal = false
-            };
-        }
-
-        for i in 0..self.grid.len() {
-            if self.grid[i][(self.grid.len() - 1) - i] != mark {
-                second_diagonal = false
-            };
-        }
-
-        first_diagonal == true || second_diagonal == true
+        first_diagonal || second_diagonal
     }
 
     pub fn has_won(&self, mark: char) -> bool {
