@@ -1,48 +1,56 @@
 use super::{board::Board, human_player::HumanPlayer};
 
 #[derive(PartialEq, Debug)]
-pub enum CurrentPlayer {
-    Player1,
-    Player2,
-}
-
-#[derive(PartialEq, Debug)]
 pub enum GameState {
     InProgress,
     GameOver,
 }
 
 pub struct Game {
-    current_player: CurrentPlayer,
     game_state: GameState,
+    players: Vec<HumanPlayer>,
+    board: Board,
 }
 
 impl Game {
-    pub fn new() -> Self {
+    pub fn new(board_size: usize, marks: Vec<char>) -> Self {
+        let board = Board::new(board_size);
+
+        let players: Vec<HumanPlayer> = marks
+            .into_iter()
+            .map(|mark| HumanPlayer::new(mark))
+            .collect();
+
         Game {
-            current_player: CurrentPlayer::Player1,
             game_state: GameState::InProgress,
+            players,
+            board,
         }
+    }
+
+    fn get_current_player(&self) -> Option<&HumanPlayer> {
+        let current_player = self.players.get(0);
+
+        return current_player;
     }
 
     pub fn switch_turn(&mut self) {
-        if self.current_player == CurrentPlayer::Player1 {
-            self.current_player = CurrentPlayer::Player2;
-        } else {
-            self.current_player = CurrentPlayer::Player1;
-        }
+        self.players.rotate_left(1);
     }
 
-    pub fn play_round(&mut self, board: &mut Board, player: &HumanPlayer) -> anyhow::Result<()> {
-        let position = player.get_position()?;
-        let mark = player.get_mark();
+    pub fn play_round(&mut self) -> anyhow::Result<()> {
+        let current_player = self
+            .get_current_player()
+            .expect("Unable to get the current player.");
 
-        board.place_mark(mark, position)?;
+        let position = current_player.get_position()?;
+        let mark = current_player.get_mark();
 
-        if board.has_won(mark) {
-            let mark = player.get_mark();
+        self.board.place_mark(mark, position)?;
+
+        if self.board.has_won(mark) {
             println!("Player {} wins!", mark);
-            board.print_board();
+            self.board.print_board();
             self.game_state = GameState::GameOver;
             Ok(())
         } else {
@@ -51,26 +59,19 @@ impl Game {
         }
     }
 
-    pub fn play(&mut self, mut board: Board, player_1: HumanPlayer, player_2: HumanPlayer) -> () {
+    pub fn play(&mut self) -> () {
         while self.game_state == GameState::InProgress {
-            board.print_board();
+            self.board.print_board();
 
-            if self.current_player == CurrentPlayer::Player1 {
-                if let Err(err) = self.play_round(&mut board, &player_1) {
-                    println!("{}", err);
-                    continue;
-                };
-            } else {
-                if let Err(err) = self.play_round(&mut board, &player_2) {
-                    println!("{}", err);
-                    continue;
-                };
-            }
+            if let Err(err) = self.play_round() {
+                println!("{}", err);
+                continue;
+            };
 
-            if board.get_has_empty_positions() == false {
+            if self.board.get_has_empty_positions() == false {
                 println!("Draw!");
 
-                board.print_board();
+                self.board.print_board();
                 self.game_state = GameState::GameOver
             };
         }
