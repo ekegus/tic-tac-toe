@@ -24,6 +24,21 @@ impl Board {
         }
     }
 
+    pub fn _get_empty_positions(&self) -> Vec<[usize; 2]> {
+        let mut positions = vec![];
+
+        // TODO: Make this immutable - use fold?
+        for i in 0..self.grid.len() {
+            for j in 0..self.grid.len() {
+                if self.grid[i][j] == '_' {
+                    positions.push([i, j])
+                }
+            }
+        }
+
+        positions
+    }
+
     pub fn get_mark(&self, position: [usize; 2]) -> anyhow::Result<char> {
         let [row_position, column_position] = position;
 
